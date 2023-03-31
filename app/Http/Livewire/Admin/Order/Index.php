@@ -59,34 +59,35 @@ class Index extends Component
 
     public function updatedSelectAll($value)
     {
-        if($value) {
+        if ($value) {
             $this->selectedOrders = Order::pluck('entry_id')->toArray();
         } else {
             $this->selectedOrders = [];
         }
-
     }
 
     public function updatedSelectedOrders($value)
     {
-        if($this->selectAll) {
+        if ($this->selectAll) {
             $this->selectAll = false;
         }
     }
 
-   
+
     public function exportSelectedQuery()
     {
-        return Excel::download(new OrdersExport($this->selectedOrders), 'orders-'.date('Y-m-d').'.xlsx');
+        return Excel::download(new OrdersExport($this->selectedOrders), 'orders-' . date('Y-m-d') . '.xlsx');
     }
 
     public function render()
     {
-        if(!auth()->user()->can('admin_order_index')) {
+        if (!auth()->user()->can('admin_order_index')) {
             return abort(403);
         }
-        $orders = Order::where('status','completed')->filter(['search' => $this->search])->orderBy($this->sortColumn, $this->sortDirection)->paginate($this->perPage);
-        
+
+        $form_id = [env('FORM_ID', '')];
+        $orders = Order::whereIn('form_id', $form_id)->filter(['search' => $this->search])->orderBy($this->sortColumn, $this->sortDirection)->paginate($this->perPage);
+
         return view('livewire.admin.order.index', compact('orders'))->layout('layouts.admin');
     }
 }

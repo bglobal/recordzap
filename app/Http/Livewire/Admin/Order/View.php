@@ -27,33 +27,40 @@ class View extends Component
         if (!auth()->user()->can('admin_payment_view')) {
             return abort(403);
         }
-        
-        if ($this->order->meta->payment_mode == 'test') {
-            $stripe_secret = config('stripe.stripe_secret_test');
-        } else {
-            $stripe_secret = config('stripe.stripe_secret');
-        }
+
+        // dd($this->order);
+
+        $stripe_secret = config('stripe.stripe_secret');
+
 
         $stripe = new \Stripe\StripeClient($stripe_secret);
-
-        $payments =  $stripe->paymentIntents->retrieve(
-            $this->order->meta->payment_transaction,
-            []
-        );
-        //dd($payments);
+        $error_msg = "";
+        $payments = "";
         $subscriptions = "";
         $customers = "";
-        if (!empty($this->order->meta->payment_subscription) || $this->order->meta->payment_subscription != "") {
+        if (!empty($this->order->meta)) {
+            try {
 
-            $subscriptions = $stripe->subscriptions->retrieve(
-                $this->order->meta->payment_subscription,
-                []
-            );
-            $customers =  $stripe->customers->retrieve(
-                $this->order->meta->payment_customer,
-                []
-            );
+                $payments =  $stripe->paymentIntents->retrieve(
+                    $this->order->meta->payment_transaction,
+                    []
+                );
+                if ($this->order->meta->payment_subscription != "") {
+
+                    $subscriptions = $stripe->subscriptions->retrieve(
+                        $this->order->meta->payment_subscription,
+                        []
+                    );
+                    $customers =  $stripe->customers->retrieve(
+                        $this->order->meta->payment_customer,
+                        []
+                    );
+                }
+            } catch (\Exception $e) {
+                $error_msg = $e->getError()->message;
+            }
         }
-        return view('livewire.admin.order.view', compact('payments', 'subscriptions', 'customers'));
+
+        return view('livewire.admin.order.view', compact('payments', 'subscriptions', 'customers', 'error_msg'));
     }
 }

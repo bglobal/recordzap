@@ -7,6 +7,9 @@
             </div>
             <div class="modal-body">
                 <div class="mb-3">
+                    @if (!empty($error_msg))
+                    <div class="text-bg-danger p-3">{{$error_msg}}</div>
+                    @else
 
                     @if($subscriptions)
                     <p>
@@ -35,6 +38,7 @@
                     <p>
                         <a href="{{$payments->metadata->entry_url}}" target="_blank">View entry details</a>
                     </p>
+                    @endif
                 </div>
 
             </div>

@@ -174,7 +174,7 @@ class Create extends Component
         $subscription->stripe_payment_id = $this->stripe_payment_id;
 
         if ($this->order->meta->payment_mode == 'test') {
-            $stripe_secret = config('stripe.stripe_secret_test');
+            $stripe_secret = config('stripe.stripe_secret');
         } else {
             $stripe_secret = config('stripe.stripe_secret');
         }
@@ -239,7 +239,6 @@ class Create extends Component
                 ],
                 'iterations' => 5,
             ];
-            // array_push($phases_array, $phase_item);
         }
 
         $stripe->subscriptionSchedules->update(

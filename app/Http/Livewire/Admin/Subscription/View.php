@@ -29,31 +29,32 @@ class View extends Component
             return abort(403);
         }
 
-        if ($this->subscription->order->meta->payment_mode == 'test') {
-            $stripe_secret = config('stripe.stripe_secret_test');
-        } else {
-            $stripe_secret = config('stripe.stripe_secret');
-        }
-        $stripe = new \Stripe\StripeClient($stripe_secret);
-        
-        $payments =  $stripe->paymentIntents->retrieve(
-            $this->subscription->stripe_payment_id,
-            []
-        );
-        
+        $error_msg = "";
         $subscriptions = "";
         $customers = "";
+        $payments = "";
 
-        $subscriptions = $stripe->subscriptions->retrieve(
-            $this->subscription->stripe_subscription_id,
-            []
-        );
-        // dd($subscriptions);
-        $customers =  $stripe->customers->retrieve(
-            $this->subscription->stripe_customer_id,
-            []
-        );
+        $stripe_secret = config('stripe.stripe_secret');
 
-        return view('livewire.admin.subscription.view', compact('payments', 'subscriptions', 'customers'));
+        $stripe = new \Stripe\StripeClient($stripe_secret);
+        try {
+            $payments =  $stripe->paymentIntents->retrieve(
+                $this->subscription->stripe_payment_id,
+                []
+            );
+
+            $subscriptions = $stripe->subscriptions->retrieve(
+                $this->subscription->stripe_subscription_id,
+                []
+            );
+            
+            $customers =  $stripe->customers->retrieve(
+                $this->subscription->stripe_customer_id,
+                []
+            );
+        } catch (\Exception $e) {
+            $error_msg = $e->getError()->message;
+        }
+        return view('livewire.admin.subscription.view', compact('payments', 'subscriptions', 'customers', 'error_msg'));
     }
 }

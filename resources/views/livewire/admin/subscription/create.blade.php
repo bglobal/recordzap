@@ -22,7 +22,7 @@
                     <input type="hidden" wire:model="stripe_customer_id" class="form-control @error('stripe_customer_id') is-invalid @enderror" name="stripe_customer_id" placeholder="paymentCustomer">
                     <input type="hidden" wire:model="stripe_payment_id" class="form-control @error('stripe_payment_id') is-invalid @enderror" name="stripe_payment_id" placeholder="paymentTransaction">
                     <p><strong>Subscription ID: {{$stripe_subscription_id}}</strong></p>
-                    <p><strong>Payment option: {{$fields["275"]["value_raw"]}}</strong></p>
+                    
 
                 </div>
                 <div class="mb-3">
