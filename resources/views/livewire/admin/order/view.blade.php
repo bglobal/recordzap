@@ -7,15 +7,19 @@
         </div>
         <div class="modal-body">
             <div class="mb-3">
+                @if (empty($order->meta))
+                <div class="text-bg-danger p-3">This order in incomplete.</div>
+                @else
+
                 @if (!empty($error_msg))
                 <div class="text-bg-danger p-3">{{$error_msg}}</div>
                 @else
 
 
                 <p><b>Payment Date:</b> {{$order->date}}<br />
-                    @if (!empty($order->meta))
-                    <b>Payment Mode:</b> {{$order->meta->payment_mode}}<br />                        
-                    @endif
+
+                    <b>Payment Mode:</b> {{$order->meta->payment_mode}}<br />
+
                     <b>Payment Status:</b> {{$order->status}}<br>
                     <b>Payment ID:</b>
                     @if (!empty($order->meta->payment_mode) && $order->meta->payment_mode == 'test')
@@ -53,9 +57,8 @@
                 </p>
                 <p>
                     <a href="{{$payments->metadata->entry_url}}" target="_blank">View entry details</a>
-
-
                 </p>
+                @endif
                 @endif
             </div>
 
