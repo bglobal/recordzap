@@ -13,7 +13,9 @@
 
 
                 <p><b>Payment Date:</b> {{$order->date}}<br />
-                    <b>Payment Mode:</b> {{$order->meta->payment_mode}}<br />
+                    @if (!empty($order->meta))
+                    <b>Payment Mode:</b> {{$order->meta->payment_mode}}<br />                        
+                    @endif
                     <b>Payment Status:</b> {{$order->status}}<br>
                     <b>Payment ID:</b>
                     @if (!empty($order->meta->payment_mode) && $order->meta->payment_mode == 'test')
