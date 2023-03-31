@@ -8,7 +8,7 @@
         <div class="modal-body">
             <div class="mb-3">
                 @if (empty($order->meta))
-                <div class="text-bg-danger p-3">This order in incomplete.</div>
+                <div class="text-bg-danger p-3">This order is incomplete.</div>
                 @else
 
                 @if (!empty($error_msg))
