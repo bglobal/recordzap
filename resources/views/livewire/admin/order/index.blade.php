@@ -138,7 +138,11 @@
                         </td>
                         <td>{{ $order->date }}</td>
                         <td class="text-end">
+                            @if($order->meta)
+                                
+                            
                             @can('admin_subscription_create')
+                            @if($order->meta->payment_subscription)
                                 @if ($order->subscription)
                                     <button onclick="Livewire.emit('showModal', 'admin.subscription.view', '{{ json_encode($order->subscription->id) }}')" class="btn btn-success d-none d-sm-inline-block">
                                         {{ __('bap.view_subscription') }}
@@ -148,7 +152,9 @@
                                         {{ __('bap.create_subscription') }}
                                     </button>
                                 @endif
+                                @endif
                             @endcan
+                            @endif
                             @can('admin_payment_view')
                                 <button onclick="Livewire.emit('showModal', 'admin.order.view', '{{ json_encode($order->entry_id) }}')" class="btn btn-secondary d-none d-sm-inline-block">
                                     {{ __('bap.view_payments') }}

@@ -34,14 +34,16 @@ class Create extends Component
         if (!auth()->user()->can('admin_subscription_create')) {
             return abort(403);
         }
-        //dd($order->fields);
+
 
         $this->entry_id = $order->entry_id;
         $this->form_id = $order->form_id;
         $this->fields = $order->fields;
-        $this->stripe_subscription_id = $order->meta->payment_subscription;
-        $this->stripe_customer_id = $order->meta->payment_customer;
-        $this->stripe_payment_id = $order->meta->payment_transaction;
+        if (!empty($order->meta)) {
+            $this->stripe_subscription_id = $order->meta->payment_subscription;
+            $this->stripe_customer_id = $order->meta->payment_customer;
+            $this->stripe_payment_id = $order->meta->payment_transaction;
+        }
     }
 
     public function get_subscription_period_data()
