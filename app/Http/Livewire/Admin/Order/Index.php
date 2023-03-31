@@ -2,7 +2,7 @@
 
 namespace App\Http\Livewire\Admin\Order;
 
-use App\Exports\OrderExport;
+use App\Exports\OrdersExport;
 use App\Models\Order;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Component;
@@ -60,7 +60,8 @@ class Index extends Component
     public function updatedSelectAll($value)
     {
         if ($value) {
-            $this->selectedOrders = Order::pluck('entry_id')->toArray();
+            $form_id = [env('FORM_ID', '')];
+            $this->selectedOrders = Order::whereIn('form_id', $form_id)->pluck('entry_id')->toArray();
         } else {
             $this->selectedOrders = [];
         }
