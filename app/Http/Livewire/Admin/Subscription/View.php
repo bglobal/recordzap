@@ -48,7 +48,7 @@ class View extends Component
             $this->subscription->stripe_subscription_id,
             []
         );
-        dd($subscriptions);
+        // dd($subscriptions);
         $customers =  $stripe->customers->retrieve(
             $this->subscription->stripe_customer_id,
             []
