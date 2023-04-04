@@ -23,6 +23,18 @@ class View extends Component
         $this->subscription = $subscription;
     }
 
+    private function currency_symbol($currency)
+    {
+        switch (strtolower($currency)) {
+            case 'usd':
+                $symbol = "$";
+                break;
+            default:
+                $symbol = "$";
+        }
+        return $symbol;
+    }
+
     public function render()
     {
         if (!auth()->user()->can('admin_subscription_create')) {
@@ -31,8 +43,13 @@ class View extends Component
 
         $error_msg = "";
         $subscriptions = "";
+        $subscriptionSchedules = "";
+        $latest_invoices = "";
+        $upcoming_invoices = "";
         $customers = "";
         $payments = "";
+        $invoice = "";
+        $phase_array = [];
 
         $stripe_secret = config('stripe.stripe_secret');
 
@@ -47,7 +64,33 @@ class View extends Component
                 $this->subscription->stripe_subscription_id,
                 []
             );
-            
+
+            $subscriptionSchedules = $stripe->subscriptionSchedules->retrieve(
+                $this->subscription->stripe_subscription_schedule_id,
+                []
+            );
+            //Latest invoice
+            $latest_invoices = $stripe->invoices->allLines($subscriptions->latest_invoice, ['limit' => 2]);
+
+            //upcoming invoice
+            $upcoming_invoices = $stripe->invoices->upcoming([
+                'subscription' => $this->subscription->stripe_subscription_id,
+            ]);
+            if (!empty($subscriptionSchedules)) {
+                foreach ($subscriptionSchedules->phases as $key => $phase) {
+                    $phase_array[$key]["start_date"]    = $phase->start_date;
+                    $phase_array[$key]["end_date"]    = $phase->end_date;
+                    $phase_array[$key]["quantity"]    = $phase->items[0]->quantity;
+                    $plans = $stripe->plans->retrieve(
+                        $phase->items[0]->plan,
+                        []
+                    );
+                    $phase_array[$key]["plan"]    = $plans->nickname;
+
+                    $phase_array[$key]["amount"]    = $this->currency_symbol($plans->currency) . ($plans->amount) / 100;
+                }
+            }
+
             $customers =  $stripe->customers->retrieve(
                 $this->subscription->stripe_customer_id,
                 []
@@ -55,6 +98,7 @@ class View extends Component
         } catch (\Exception $e) {
             $error_msg = $e->getError()->message;
         }
-        return view('livewire.admin.subscription.view', compact('payments', 'subscriptions', 'customers', 'error_msg'));
+        // dd($latest_invoices);
+        return view('livewire.admin.subscription.view', compact('payments', 'subscriptions', 'phase_array', 'latest_invoices', 'upcoming_invoices', 'customers', 'error_msg'));
     }
 }

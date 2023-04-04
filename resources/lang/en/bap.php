@@ -125,6 +125,7 @@ return [
     'create_subscription' => 'Create Subscription',
     'update_subscription' => 'Update Subscription',
     'view_subscription' => 'View Subscription',
+    'subscription_details' => 'Subscription details',
     'view_payments' => 'View Payments',
     'payment_details' => 'Payment Details',
     'comments' => 'Comments',
