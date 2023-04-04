@@ -98,7 +98,13 @@
                         <li class="nav-item dropdown @if(\Illuminate\Support\Facades\Route::is('admin.order.*')) show @endif">
                             <a class="nav-link dropdown-toggle" href="#navbar-user" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button" aria-expanded="true">
                                 <span class="nav-link-icon d-md-none d-lg-inline-block">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><circle cx="6" cy="19" r="2"></circle><circle cx="17" cy="19" r="2"></circle><path d="M17 17h-11v-14h-2"></path><path d="M6 5l14 1l-1 7h-13"></path></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                        <circle cx="6" cy="19" r="2"></circle>
+                                        <circle cx="17" cy="19" r="2"></circle>
+                                        <path d="M17 17h-11v-14h-2"></path>
+                                        <path d="M6 5l14 1l-1 7h-13"></path>
+                                    </svg>
                                 </span>
                                 <span class="nav-link-title">
                                     {{ __('bap.order_management') }}
@@ -110,7 +116,7 @@
                                     {{ __('bap.orders') }}
                                 </a>
                                 @endcan
-                               
+
                             </div>
                         </li>
                         @endcan
@@ -210,6 +216,13 @@
         @include('layouts.global.header')
         <!-- Page Content -->
         <div class="page-wrapper">
+            <div id="ajaxLoader" style="display:none">
+                <div style="background: #000000;opacity: .75;display: flex;align-items: center;justify-content: center;position: fixed;top: 0;left: 0;z-index: 1090;height: 100%;width: 100%;color: #fff;">
+                    <div class="spinner-border text-center" style="width: 4rem; height: 4rem;" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
             <main class="{{ config('bap.container', 'container-fluid') }}">
                 @if(isset($pretitle))
                 <div class="page-pretitle">
@@ -243,6 +256,18 @@
     </div>
 
     @include('layouts.global.foot-js')
+
+    <script type="text/javascript">
+        let loaderElement = document.getElementById('ajaxLoader');
+
+        Livewire.hook('message.sent', () => {
+            loaderElement.style.display = "block";
+        });
+
+        Livewire.hook('message.received', () => {
+            loaderElement.style.display = "none";
+        });
+    </script>
 </body>
 
 </html>

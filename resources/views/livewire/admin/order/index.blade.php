@@ -16,6 +16,7 @@
     <div class="card">
         <div class="card-header">
             <h3 class="card-title">{{ __('bap.orders') }}</h3>
+            
         </div>
         <div class="card-body">
             <div class="d-flex">
@@ -53,6 +54,10 @@
             </div>
         </div>
         <div class="table-responsive">
+        <div wire:loading.delay>Processing....</div>
+        <div wire:loading wire:target="showModal()">
+        Updating Bob...
+    </div>
             <table class="table card-table table-vcenter text-nowrap datatable">
                 <thead>
                     <tr>
@@ -147,6 +152,7 @@
                             <button onclick="Livewire.emit('showModal', 'admin.subscription.view', '{{ json_encode($order->subscription->id) }}')" class="btn btn-success d-none d-sm-inline-block">
                                 {{ __('bap.view_subscription') }}
                             </button>
+                            
                             @else
                             <button onclick="Livewire.emit('showModal', 'admin.subscription.create', '{{ json_encode($order->entry_id) }}')" class="btn btn-primary d-none d-sm-inline-block">
                                 {{ __('bap.create_subscription') }}
@@ -156,9 +162,10 @@
                             @endcan
                             @endif
                             @can('admin_payment_view')
-                            <button onclick="Livewire.emit('showModal', 'admin.order.view', '{{ json_encode($order->entry_id) }}')" class="btn btn-secondary d-none d-sm-inline-block">
+                            <button wire:click="$emit('showModal', 'admin.order.view', '{{ json_encode($order->entry_id) }}')" class="btn btn-secondary d-none d-sm-inline-block">
                                 {{ __('bap.view_payments') }}
                             </button>
+                            
                             @endcan
                         </td>
                     </tr>
